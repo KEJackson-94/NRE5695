@@ -1,8 +1,7 @@
-sleep_for_a_minute <- function() { Sys.sleep(60) }
+sleep_for_a_minute <- function() { Sys.sleep(60) } #This sets a clock to measure the time for the script to execute
 start_time <- Sys.time()
 sleep_for_a_minute()
 
-# Requires ggplot2
 library('ggplot2')
 library('plyr')
 library('mapdata')
@@ -12,14 +11,15 @@ NewEngland.dataset <- c()
 x <- 0
 
 gpids <- get_table(table.name='GeoPoliticalUnits')
-# Rhode Island isn't inlcuded b/c it doesn't have any sites meeting the criteria
-# c('Connecticut','New Hampshire','Vermont','Massachusetts','Maine')
 for (st in c('Connecticut','New Hampshire','Vermont','Massachusetts','Maine')){
   print(st)
   ID <- gpids[which(gpids$GeoPoliticalName == st),1]
-  print(ID)}
+  print(ID)} # Rhode Island isn't inlcuded b/c it doesn't have any sites meeting the criteria
+             # Inlcuding the Rhode Island code will results in get_dataset() accessing ALL 
+             # Neotoma data (I don't know why)
 
-all.datasets <- get_dataset(datasettype = 'pollen', gpid = c(6442,7923,7368,8981,7326), altmin = 100, altmax = 430, taxonname = 'Poaceae')
+all.datasets <- get_dataset(datasettype = 'pollen', gpid = c(6442,7923,7368,8981,7326), 
+                            altmin = 100, altmax = 430, taxonname = 'Poaceae') # gpid are copied from those printed in line 22
 all.downloads <- get_download(all.datasets, verbose = FALSE)
 compiled.cores <- compile_taxa(all.downloads, 'P25')
 
@@ -41,7 +41,7 @@ cc <- c('s1','s2','s3','s4','s5','s6','s7','s8','s9','s10',
 
 library('analogue')
 
-# Plot Poaceae
+# Plot Poaceae #
 
 p1.df <- (NA)
 
@@ -57,7 +57,7 @@ p1 <- qplot(p1.df$age,p1.df$poaceae, data=p1.df, geom=c("point"),
       method="lm", formula=y~x, color=site, 
       xlab="Years Before Present", ylab="Percent Poaceae (Grass)") +ylim(0,20)+ xlim(-50,600) + geom_smooth()
 
-# Plot Pinus
+# Plot Pinus #
 
 p2.df <- (NA)
 
@@ -73,7 +73,7 @@ p2 <- qplot(p2.df$age,p2.df$poaceae, data=p2.df, geom=c("point"),
             method="lm", formula=y~x, color=site, 
             xlab="Years Before Present", ylab="Percent Pinus (Pine)") +ylim(0,50)+ xlim(-50,600) + geom_smooth()
 
-# Plot Tsuga
+# Plot Tsuga #
 
 p3.df <- (NA)
 
@@ -89,7 +89,7 @@ p3 <- qplot(p3.df$age,p3.df$poaceae, data=p3.df, geom=c("point"),
             method="lm", formula=y~x, color=site,
             xlab="Years Before Present", ylab="Percent Tsuga (Hemlock)") +ylim(0,50)+ xlim(-50,600) + geom_smooth()
 
-# Plot Acer
+# Plot Acer #
 
 p4.df <- (NA)
 
@@ -105,7 +105,9 @@ p4 <- qplot(p4.df$age,p4.df$poaceae, data=p4.df, geom=c("point"),
             method="lm", formula=y~x, color=site, 
             xlab="Years Before Present", ylab="Percent Acer (Maple)") +ylim(0,20)+ xlim(-50,600) + geom_smooth()
 
-#install.packages("cowplot")
+### This produces a merged figure of relevant taxa cleans up the figures ###
+
+install.packages("cowplot")
 library(ggplot2)
 library(cowplot)
 plot_grid(p1, p2, p3, p4, labels = c("A", "B", "C", "D"), nrow = 2, ncol = 2, align = "v")
@@ -115,6 +117,6 @@ end_time <- Sys.time()
 end_time - start_time
 
 for (i in 1:length(pubs)){
-  print(pubs[[i]][[1]][[1]])}
+  print(pubs[[i]][[1]][[1]])} # This prints out all of the citations for data used in above analysis
 
   
